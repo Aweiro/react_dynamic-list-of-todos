@@ -6,12 +6,12 @@ import { Todo } from '../../types/Todo';
 import classNames from 'classnames';
 
 interface Props {
-  onSelectTodo: (v: Todo | null) => void;
+  onClose: (v: Todo | null) => void;
   activeTodo: Todo;
 }
-export const TodoModal: React.FC<Props> = ({ onSelectTodo, activeTodo }) => {
+export const TodoModal: React.FC<Props> = ({ onClose, activeTodo }) => {
   const handleClick = (): void => {
-    onSelectTodo(null);
+    onClose(null);
   };
 
   const [user, setUser] = useState<User | null>(null);
@@ -44,6 +44,7 @@ export const TodoModal: React.FC<Props> = ({ onSelectTodo, activeTodo }) => {
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <button
               type="button"
+              aria-label="Close modal"
               className="delete"
               data-cy="modal-close"
               onClick={handleClick}

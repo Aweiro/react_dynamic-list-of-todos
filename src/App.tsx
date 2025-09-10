@@ -17,6 +17,9 @@ export const App: React.FC = () => {
 
   const [value, setValue] = useState('');
   const [valueSelect, setValueSelect] = useState('');
+  const handleQueryChange = (q: string) => setValue(q);
+  const handleFilterChange = (f: string) => setValueSelect(f);
+  const handleSelectTodo = (t: Todo | null) => setActiveTodo(t);
 
   useEffect(() => {
     getTodos()
@@ -51,8 +54,8 @@ export const App: React.FC = () => {
 
             <div className="block">
               <TodoFilter
-                onQueryChange={setValue}
-                onFilterChange={setValueSelect}
+                onQueryChange={handleQueryChange}
+                onFilterChange={handleFilterChange}
                 valueSelect={valueSelect}
                 value={value}
               />
@@ -65,7 +68,7 @@ export const App: React.FC = () => {
                 <TodosList
                   todos={filteredTodos}
                   activeTodo={activeTodo}
-                  onSelectTodo={setActiveTodo}
+                  onSelectTodo={handleSelectTodo}
                 />
               )}
             </div>
@@ -74,7 +77,10 @@ export const App: React.FC = () => {
       </div>
 
       {activeTodo && (
-        <TodoModal onSelectTodo={setActiveTodo} activeTodo={activeTodo} />
+        <TodoModal
+          activeTodo={activeTodo}
+          onClose={() => setActiveTodo(null)}
+        />
       )}
     </>
   );
