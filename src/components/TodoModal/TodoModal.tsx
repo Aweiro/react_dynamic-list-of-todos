@@ -6,18 +6,20 @@ import { Todo } from '../../types/Todo';
 import classNames from 'classnames';
 
 interface Props {
-  setActiveTodo: (v: Todo | null) => void;
+  onSelectTodo: (v: Todo | null) => void;
   activeTodo: Todo;
 }
-export const TodoModal: React.FC<Props> = ({ setActiveTodo, activeTodo }) => {
+export const TodoModal: React.FC<Props> = ({ onSelectTodo, activeTodo }) => {
   const handleClick = (): void => {
-    setActiveTodo(null);
+    onSelectTodo(null);
   };
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
+    setUser(null);
     getUser(activeTodo.userId)
       .then(setUser)
       .finally(() => setLoading(false));

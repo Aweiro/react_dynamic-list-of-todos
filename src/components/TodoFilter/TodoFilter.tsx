@@ -1,13 +1,15 @@
+import React from 'react';
+
 interface Props {
-  setValue: (v: string) => void;
-  setValueSelect: (v: string) => void;
+  onQueryChange: (v: string) => void;
+  onFilterChange: (v: string) => void;
   valueSelect: string;
   value: string;
 }
 
 export const TodoFilter: React.FC<Props> = ({
-  setValue,
-  setValueSelect,
+  onQueryChange,
+  onFilterChange,
   valueSelect,
   value,
 }) => {
@@ -18,7 +20,7 @@ export const TodoFilter: React.FC<Props> = ({
           <select
             data-cy="statusSelect"
             value={valueSelect}
-            onChange={e => setValueSelect(e.target.value)}
+            onChange={e => onFilterChange(e.target.value)}
           >
             <option value="all">All</option>
             <option value="active">Active</option>
@@ -34,7 +36,7 @@ export const TodoFilter: React.FC<Props> = ({
           className="input"
           placeholder="Search..."
           value={value}
-          onChange={e => setValue(e.target.value)}
+          onChange={e => onQueryChange(e.target.value)}
         />
         <span className="icon is-left">
           <i className="fas fa-magnifying-glass" />
@@ -47,7 +49,7 @@ export const TodoFilter: React.FC<Props> = ({
               data-cy="clearSearchButton"
               type="button"
               className="delete"
-              onClick={() => setValue('')}
+              onClick={() => onQueryChange('')}
             />
           </span>
         )}

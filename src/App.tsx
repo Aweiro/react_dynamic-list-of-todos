@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 
-import { TodoList } from './components/TodoList';
+import { TodosList } from './components/TodosList';
 import { TodoFilter } from './components/TodoFilter';
 import { TodoModal } from './components/TodoModal';
 import { Loader } from './components/Loader';
@@ -26,7 +26,7 @@ export const App: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleChange = useMemo(() => {
+  const filteredTodos = useMemo(() => {
     let result = [...todos];
 
     if (valueSelect === 'active') {
@@ -51,8 +51,8 @@ export const App: React.FC = () => {
 
             <div className="block">
               <TodoFilter
-                setValue={setValue}
-                setValueSelect={setValueSelect}
+                onQueryChange={setValue}
+                onFilterChange={setValueSelect}
                 valueSelect={valueSelect}
                 value={value}
               />
@@ -62,10 +62,10 @@ export const App: React.FC = () => {
               {loading ? (
                 <Loader />
               ) : (
-                <TodoList
-                  todos={handleChange}
+                <TodosList
+                  todos={filteredTodos}
                   activeTodo={activeTodo}
-                  setActiveTodo={setActiveTodo}
+                  onSelectTodo={setActiveTodo}
                 />
               )}
             </div>
@@ -74,7 +74,7 @@ export const App: React.FC = () => {
       </div>
 
       {activeTodo && (
-        <TodoModal setActiveTodo={setActiveTodo} activeTodo={activeTodo} />
+        <TodoModal onSelectTodo={setActiveTodo} activeTodo={activeTodo} />
       )}
     </>
   );
