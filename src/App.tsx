@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 
@@ -7,8 +7,41 @@ import { TodoList } from './components/TodoList';
 import { TodoFilter } from './components/TodoFilter';
 import { TodoModal } from './components/TodoModal';
 import { Loader } from './components/Loader';
+import { getTodos } from './api';
+import { Todo } from './types/Todo';
 
 export const App: React.FC = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTodo, setActiveTodo] = useState<Todo | null>(null);
+
+  const [value, setValue] = useState('');
+  const [valueSelect, setValueSelect] = useState('');
+
+  useEffect(() => {
+    getTodos()
+      .then(data => {
+        setTodos(data);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleChange = useMemo(() => {
+    let result = [...todos];
+
+    if (valueSelect === 'active') {
+      result = result.filter(todo => !todo.completed);
+    } else if (valueSelect === 'completed') {
+      result = result.filter(todo => todo.completed);
+    } else if (valueSelect === 'all') {
+      result = result;
+    }
+
+    return result.filter(todo =>
+      todo.title.toLowerCase().includes(value.toLowerCase()),
+    );
+  }, [todos, value, valueSelect]);
+
   return (
     <>
       <div className="section">
@@ -17,18 +50,32 @@ export const App: React.FC = () => {
             <h1 className="title">Todos:</h1>
 
             <div className="block">
-              <TodoFilter />
+              <TodoFilter
+                setValue={setValue}
+                setValueSelect={setValueSelect}
+                valueSelect={valueSelect}
+                value={value}
+              />
             </div>
 
             <div className="block">
-              <Loader />
-              <TodoList />
+              {loading ? (
+                <Loader />
+              ) : (
+                <TodoList
+                  todos={handleChange}
+                  activeTodo={activeTodo}
+                  setActiveTodo={setActiveTodo}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      <TodoModal />
+      {activeTodo && (
+        <TodoModal setActiveTodo={setActiveTodo} activeTodo={activeTodo} />
+      )}
     </>
   );
 };
